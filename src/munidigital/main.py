@@ -1,9 +1,8 @@
 import requests
 import pandas as pd
 import json
+import os
 from datetime import datetime
-
-import json
 
 with open('credentials_munidigital.json') as f:
     config = json.load(f)
@@ -11,6 +10,7 @@ with open('credentials_munidigital.json') as f:
 ACCESS_TOKEN = config["ACCESS_TOKEN"]
 CONTENT_TYPE = config["CONTENT_TYPE"]
 
+data_folder_path = './data'
 
 def get_data():
     url = 'https://munidigital.com/MuniDigitalCore/api/incidentes' # TESTING INCIDENTES
@@ -36,10 +36,23 @@ def get_data():
         data = response.json()
 
         if data['status'] == 'ok' and data['result']:
+
             df_incidentes = pd.DataFrame(data['result'])
-            print("datos obtenidos correctamente")
-            print(df_incidentes.head())
-            df_incidentes.to_csv('incidentes.csv', index=False)
+            
+            print("datos obtenidos correctamente, guardando en csv.")
+
+            # Eliminamos los / de las fechas
+            fecha_desde = fecha_desde.replace('/', '-')
+            fecha_hasta = fecha_hasta.replace('/', '-')
+
+            # Guardamos los datos en un csv
+            filename = f"incidentes_{fecha_desde}_{fecha_hasta}.csv"
+
+            file_path = os.path.join(data_folder_path, filename)
+
+            df_incidentes.to_csv(file_path, index=False)
+
+            print(f"Datos guardados en {file_path}")
 
         elif data['status'] == 'ok' and not data['result']:
             print("No se encontraron datos")

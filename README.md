@@ -1,10 +1,6 @@
-Codigo para extraer datos de munidigital.
+Codigo para extraer datos de munidigital e instagram.
 
-src/main.py ubicacion del script
+src/munidigital/main.py ubicacion del script para munidigital
+src/instagram/main.py ubicacion del script para instagram
 
-armar src/config.py con variables de entorno para las credenciales.
-
-ACCESS_TOKEN = ''
-CONTENT_TYPE = ''
-USER = ''
-PASS = ''
+crear un src/munidigital/credentials_munidigital.json (reemplazar munidigital con instagram para la parte de instagram) para las credenciales que despues en los main se llaman como variables de entorno

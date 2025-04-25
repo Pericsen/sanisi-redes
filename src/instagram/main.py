@@ -8,11 +8,11 @@ with open('credentials_instagram.json') as f:
 ACCESS_TOKEN = config["access_token"]
 USER_ID = config["ig_user_id"]
 
-def get_recent_posts(limit=100):
+def get_recent_posts(limit=300):
     url = f"https://graph.instagram.com/v22.0/{USER_ID}/media"
     
     params = {
-        "fields": "id,caption,timestamp",
+        "fields": "id, caption, timestamp, alt_text, comments_count, like_count, media_type, media_url",
         "limit": limit,
         "access_token": ACCESS_TOKEN
     }
@@ -26,7 +26,7 @@ def get_comments(media_id):
     url = f"https://graph.instagram.com/v22.0/{media_id}/comments"
 
     params = {
-        "fields": "id, username, like_count, text, timestamp",
+        "fields": "from, media, replies, like_count, text, timestamp",
         "access_token": ACCESS_TOKEN
     }
 
@@ -38,6 +38,7 @@ def get_comments(media_id):
         params = {}
 
     return comments
+
 
 def comments_to_csv(comments_dict, filename="comments.csv"):
     flat_data = []
@@ -56,8 +57,7 @@ def comments_to_csv(comments_dict, filename="comments.csv"):
     df = pd.DataFrame(flat_data)
     df.to_csv(filename, index=False)
 
-def main():
-    posts = get_recent_posts(limit=100)
+def save_comments_to_csv(posts):
     all_comments = {}
 
     for post in posts:
@@ -68,6 +68,11 @@ def main():
 
     comments_to_csv(all_comments)
     print("Comentarios guardados en comments.csv")
+
+
+def main():
+    posts = get_recent_posts(limit=2)
+    save_comments_to_csv(posts)
 
 if __name__ == '__main__':
     main()

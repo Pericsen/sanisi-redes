@@ -8,7 +8,7 @@ with open('credentials_instagram.json') as f:
 ACCESS_TOKEN = config["access_token"]
 USER_ID = config["ig_user_id"]
 
-def get_recent_posts(limit=300):
+def get_recent_posts(limit):
     url = f"https://graph.instagram.com/v22.0/{USER_ID}/media"
     
     params = {
@@ -40,10 +40,14 @@ def get_comments(media_id):
     return comments
 
 
-def comments_to_csv(comments_dict, filename="comments.csv"):
+def comments_to_csv(comments_dict, posts_list, filename="comments.csv"):
+    
+    posts_map = {post["id"]: post for post in posts_list}
+    
     flat_data = []
 
     for post_id, comment_list in comments_dict.items():
+        post = posts_map.get(post_id, {})
         for comment in comment_list:
             flat_data.append({
                 "post_id": post_id,
@@ -51,7 +55,14 @@ def comments_to_csv(comments_dict, filename="comments.csv"):
                 "username": comment.get("username"),
                 "comment_text": comment.get("text"),
                 "like_count": comment.get("like_count"),
-                "timestamp": comment.get("timestamp")
+                "timestamp": comment.get("timestamp"),
+                "post_caption":        post.get("caption"),
+                "post_time":           post.get("timestamp"),
+                "post_alt_text":       post.get("alt_text"),
+                "post_comments_count": post.get("comments_count"),
+                "post_likes":          post.get("like_count"),
+                "post_media_type":     post.get("media_type"),
+                "post_media_url":      post.get("media_url"),
             })
 
     df = pd.DataFrame(flat_data)
@@ -66,12 +77,12 @@ def save_comments_to_csv(posts):
         comments = get_comments(media_id)
         all_comments[media_id] = comments
 
-    comments_to_csv(all_comments)
+    comments_to_csv(all_comments, posts)
     print("Comentarios guardados en comments.csv")
 
 
 def main():
-    posts = get_recent_posts(limit=2)
+    posts = get_recent_posts(200)
     save_comments_to_csv(posts)
 
 if __name__ == '__main__':

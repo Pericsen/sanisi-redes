@@ -82,7 +82,7 @@ def save_comments_to_csv(posts):
 
 
 def main():
-    posts = get_recent_posts(200)
+    posts = get_recent_posts(2)
     save_comments_to_csv(posts)
 
 if __name__ == '__main__':

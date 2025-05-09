@@ -19,7 +19,7 @@ def paginate(url, params):
         params = {}  # sólo el primer request lleva params
     return items
 
-def get_page_posts(limit=2):
+def get_page_posts(limit=200):
     """
     Devuelve lista de posts con contador de shares, comments y reactions.
     """
@@ -38,7 +38,7 @@ def get_page_posts(limit=2):
     }
     return paginate(url, params)
 
-def get_comments_for_post(post_id, limit=2):
+def get_comments_for_post(post_id, limit=200):
     """
     Devuelve lista de comentarios con autor, texto, timestamp y like_count.
     """
@@ -50,7 +50,7 @@ def get_comments_for_post(post_id, limit=2):
     }
     return paginate(url, params)
 
-def build_comments_df(post_limit=2, comment_limit=2):
+def build_comments_df(post_limit=200, comment_limit=200):
     posts = get_page_posts(limit=post_limit)
     rows = []
     for p in posts:
@@ -77,7 +77,7 @@ def build_comments_df(post_limit=2, comment_limit=2):
 
 if __name__ == '__main__':
     # Construir y guardar CSV
-    df_fb = build_comments_df(post_limit=2, comment_limit=2)
+    df_fb = build_comments_df(post_limit=200, comment_limit=200)
     print(f"Total comentarios obtenidos: {len(df_fb)}")
     df_fb.to_csv('fb_page_comments.csv', index=False)
     

@@ -17,7 +17,7 @@ def get_data():
 
     TOKEN = ACCESS_TOKEN
 
-    fecha_desde = '01/03/2025'
+    fecha_desde = '01/11/2024'
     fecha_hasta = datetime.today().strftime('%d/%m/%Y')
 
     headers = {

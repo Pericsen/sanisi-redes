@@ -4,7 +4,7 @@ import pandas as pd
 import sys
 from datetime import datetime
 
-# Set up logging for debugging
+
 import logging
 logging.basicConfig(level=logging.INFO, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
@@ -20,10 +20,10 @@ except json.JSONDecodeError:
     logger.error("Invalid JSON in credentials file.")
     sys.exit(1)
 
-START_DATE = '2024-01-01'  # Format: YYYY-MM-DD
-END_DATE = datetime.now().strftime('%Y-%m-%d')  # Today
+START_DATE = '2024-01-01'  
+END_DATE = datetime.now().strftime('%Y-%m-%d')  
 
-# Convert to Unix timestamps for Facebook API
+
 start_timestamp = int(datetime.strptime(START_DATE, '%Y-%m-%d').timestamp())
 end_timestamp = int(datetime.now().timestamp())
 
@@ -35,8 +35,8 @@ if not ACCESS_TOKEN or not PAGE_ID:
     logger.error("Missing credentials! pages_access_token or page_id not found in config file.")
     sys.exit(1)
 
-# Using a more realistic API version
-API_VERSION = 'v22.0'  # Update to the current version if needed
+
+API_VERSION = 'v22.0'  
 BASE_URL = f'https://graph.facebook.com/{API_VERSION}'
 
 def paginate(url, params):
@@ -47,7 +47,7 @@ def paginate(url, params):
     while url:
         try:
             response = requests.get(url, params=params)
-            response.raise_for_status()  # Raise exception for HTTP errors
+            response.raise_for_status() 
             resp = response.json()
             
             if 'error' in resp:
@@ -61,7 +61,7 @@ def paginate(url, params):
                 logger.info(f"Retrieved {len(items)} items so far...")
                 
             url = resp.get('paging', {}).get('next')
-            params = {}  # Only the first request carries params
+            params = {} 
             
         except requests.exceptions.RequestException as e:
             logger.error(f"Request failed: {e}")
@@ -140,7 +140,6 @@ def get_page_posts(limit=200):
     posts = paginate(url, params)
     logger.info(f"Retrieved {len(posts)} posts")
     
-    # Debug the first post if available
     if posts and len(posts) > 0:
         first_post = posts[0]
         logger.info(f"Sample post ID: {first_post.get('id')}")
